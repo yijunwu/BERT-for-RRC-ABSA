@@ -1,0 +1,72 @@
+05/12/2021 18:14:59 - INFO - pytorch_pretrained_bert.tokenization -   loading vocabulary file ../pt_model/pt_bert-base-uncased_amazon_yelp/vocab.txt
+05/12/2021 18:14:59 - INFO - __main__ -   ***** Running training *****
+05/12/2021 18:14:59 - INFO - __main__ -     Num examples = 2895
+05/12/2021 18:14:59 - INFO - __main__ -     Batch size = 32
+05/12/2021 18:14:59 - INFO - __main__ -     Num steps = 360
+05/12/2021 18:14:59 - INFO - __main__ -   ***** Running validations *****
+05/12/2021 18:14:59 - INFO - __main__ -     Num orig examples = 150
+05/12/2021 18:14:59 - INFO - __main__ -     Num split examples = 150
+05/12/2021 18:15:00 - INFO - __main__ -     Batch size = 32
+05/12/2021 18:15:00 - INFO - pytorch_pretrained_bert.modeling -   loading archive file ../pt_model/pt_bert-base-uncased_amazon_yelp/
+05/12/2021 18:15:00 - INFO - pytorch_pretrained_bert.modeling -   Model config {
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bos_token_id": 0,
+  "do_sample": false,
+  "eos_token_ids": 0,
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1"
+  },
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "is_decoder": false,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1
+  },
+  "layer_norm_eps": 1e-12,
+  "length_penalty": 1.0,
+  "max_length": 20,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_beams": 1,
+  "num_hidden_layers": 12,
+  "num_labels": 2,
+  "num_return_sequences": 1,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "output_past": true,
+  "pad_token_id": 0,
+  "pruned_heads": {},
+  "repetition_penalty": 1.0,
+  "temperature": 1.0,
+  "top_k": 50,
+  "top_p": 1.0,
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "vocab_size": 30522
+}
+
+05/12/2021 18:15:05 - INFO - pytorch_pretrained_bert.modeling -   Weights of BertForSequenceLabeling not initialized from pretrained model: ['classifier.weight', 'classifier.bias']
+05/12/2021 18:15:05 - INFO - pytorch_pretrained_bert.modeling -   Weights from pretrained model not used in BertForSequenceLabeling: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.predictions.decoder.bias']
+/usr/local/lib/python3.8/dist-packages/pytorch_pretrained_bert/optimization.py:275: UserWarning: This overload of add_ is deprecated:
+	add_(Number alpha, Tensor other)
+Consider using one of the following signatures instead:
+	add_(Tensor other, *, Number alpha) (Triggered internally at  /pytorch/torch/csrc/utils/python_arg_parser.cpp:1005.)
+  next_m.mul_(beta1).add_(1 - beta1, grad)
+05/12/2021 18:16:43 - INFO - __main__ -   validation loss: 0.086555
+05/12/2021 18:18:19 - INFO - __main__ -   validation loss: 0.063580
+05/12/2021 18:19:56 - INFO - __main__ -   validation loss: 0.069171
+05/12/2021 18:21:20 - WARNING - pytorch_pretrained_bert.optimization -   Training beyond specified 't_total'. Learning rate multiplier set to 0.0. Please set 't_total' of WarmupLinearSchedule correctly.
+05/12/2021 18:21:21 - WARNING - pytorch_pretrained_bert.optimization -   Training beyond specified 't_total'. Learning rate multiplier set to 0.0. Please set 't_total' of WarmupLinearSchedule correctly.
+05/12/2021 18:21:22 - WARNING - pytorch_pretrained_bert.optimization -   Training beyond specified 't_total'. Learning rate multiplier set to 0.0. Please set 't_total' of WarmupLinearSchedule correctly.
+05/12/2021 18:21:23 - INFO - __main__ -   validation loss: 0.068851

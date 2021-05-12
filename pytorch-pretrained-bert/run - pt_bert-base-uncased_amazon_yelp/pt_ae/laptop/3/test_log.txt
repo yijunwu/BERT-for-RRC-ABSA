@@ -1,0 +1,4 @@
+05/12/2021 18:07:26 - INFO - pytorch_pretrained_bert.tokenization -   loading vocabulary file ../pt_model/pt_bert-base-uncased_amazon_yelp/vocab.txt
+05/12/2021 18:07:26 - INFO - __main__ -   ***** Running evaluation *****
+05/12/2021 18:07:26 - INFO - __main__ -     Num examples = 800
+05/12/2021 18:07:26 - INFO - __main__ -     Batch size = 8
