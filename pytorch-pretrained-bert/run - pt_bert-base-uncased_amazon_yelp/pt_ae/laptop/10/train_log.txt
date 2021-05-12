@@ -65,3 +65,8 @@ Consider using one of the following signatures instead:
   next_m.mul_(beta1).add_(1 - beta1, grad)
 05/12/2021 18:52:25 - INFO - __main__ -   validation loss: 0.081654
 05/12/2021 18:54:05 - INFO - __main__ -   validation loss: 0.063432
+05/12/2021 18:55:43 - INFO - __main__ -   validation loss: 0.065652
+05/12/2021 18:57:08 - WARNING - pytorch_pretrained_bert.optimization -   Training beyond specified 't_total'. Learning rate multiplier set to 0.0. Please set 't_total' of WarmupLinearSchedule correctly.
+05/12/2021 18:57:09 - WARNING - pytorch_pretrained_bert.optimization -   Training beyond specified 't_total'. Learning rate multiplier set to 0.0. Please set 't_total' of WarmupLinearSchedule correctly.
+05/12/2021 18:57:10 - WARNING - pytorch_pretrained_bert.optimization -   Training beyond specified 't_total'. Learning rate multiplier set to 0.0. Please set 't_total' of WarmupLinearSchedule correctly.
+05/12/2021 18:57:11 - INFO - __main__ -   validation loss: 0.065195
