@@ -25,7 +25,7 @@ import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 
 from pytorch_pretrained_bert.tokenization import BertTokenizer
-from pytorch_pretrained_bert.modeling import PreTrainedBertModel, BertModel
+from pytorch_pretrained_bert.modeling import BertPreTrainedModel, BertModel
 from pytorch_pretrained_bert.optimization import BertAdam
 
 import absa_data_utils as data_utils
@@ -43,7 +43,7 @@ def warmup_linear(x, warmup=0.002):
     return 1.0 - x
 
 
-class BertForSequenceLabeling(PreTrainedBertModel):
+class BertForSequenceLabeling(BertPreTrainedModel):
     def __init__(self, config, num_labels=3):
         super(BertForSequenceLabeling, self).__init__(config)
         self.num_labels = num_labels

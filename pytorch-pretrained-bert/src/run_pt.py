@@ -25,14 +25,14 @@ import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 
 from pytorch_pretrained_bert.tokenization import BertTokenizer
-from pytorch_pretrained_bert.modeling import BertModel, PreTrainedBertModel, BertPreTrainingHeads
+from pytorch_pretrained_bert.modeling import BertModel, BertPreTrainedModel, BertPreTrainingHeads
 
 from pytorch_pretrained_bert.optimization import BertAdam
 
 import modelconfig
 
 
-class BertForMTPostTraining(PreTrainedBertModel):
+class BertForMTPostTraining(BertPreTrainedModel):
     def __init__(self, config):
         super(BertForMTPostTraining, self).__init__(config)
         self.bert = BertModel(config)
