@@ -1,0 +1,32 @@
+PS C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert> python .\eval\evaluate_ae.py --pred_json '.\run - pt_bert-base-uncased_amazon_yelp\pt_ae\laptop\11\predictions.json'
+Traceback (most recent call last):
+  File "C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\eval\evaluate_ae.py", line 174, in <module>
+    print(evaluate(args.pred_json, command, template) )
+  File "C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\eval\evaluate_ae.py", line 157, in evaluate
+    label_laptop_xml(template, command[4], pred_json["raw_X"], y_pred)
+  File "C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\eval\evaluate_ae.py", line 74, in label_laptop_xml
+    dom=ET.parse(fn)
+  File "C:\Users\wuyijun\AppData\Local\Programs\Python\Python39\lib\xml\etree\ElementTree.py", line 1229, in parse
+    tree.parse(source, parser)
+  File "C:\Users\wuyijun\AppData\Local\Programs\Python\Python39\lib\xml\etree\ElementTree.py", line 569, in parse
+    source = open(source, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'ae/official_data/Laptops_Test_Data_PhaseA.xml'
+PS C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert> python .\eval\evaluate_ae.py --pred_json '.\run - pt_bert-base-uncased_amazon_yelp\pt_ae\laptop\11\predictions.json'
+java.io.FileNotFoundException: ae\official_data\Laptops_Test_Gold.xml (The system cannot find the file specified)
+        at java.io.FileInputStream.open0(Native Method)
+        at java.io.FileInputStream.open(Unknown Source)
+        at java.io.FileInputStream.<init>(Unknown Source)
+        at java.io.FileInputStream.<init>(Unknown Source)
+        at java.io.FileReader.<init>(Unknown Source)
+        at gr.ilsp.nlp.semeval.absa.eval.ConsoleAspectsAndCategsExtractionEval.run(ConsoleAspectsAndCategsExtractionEval.java:80)
+        at gr.ilsp.nlp.semeval.absa.eval.ConsoleAspectsAndCategsExtractionEval.main(ConsoleAspectsAndCategsExtractionEval.java:243)
+        at Main.Aspects.main(Aspects.java:9)
+Traceback (most recent call last):
+  File "C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\eval\evaluate_ae.py", line 174, in <module>
+    print(evaluate(args.pred_json, command, template) )
+  File "C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\eval\evaluate_ae.py", line 159, in evaluate
+    return float(acc[15])
+IndexError: list index out of range
+PS C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert> python .\eval\evaluate_ae.py --pred_json '.\run - pt_bert-base-uncased_amazon_yelp\pt_ae\laptop\11\predictions.json'
+0.83420074
+PS C:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert>
