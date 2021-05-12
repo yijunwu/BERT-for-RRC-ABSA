@@ -26,4 +26,6 @@ MODEL_ARCHIVE_MAP = {
     
     'laptop_pt': '../pt_model/laptop_pt/',
     'rest_pt': '../pt_model/rest_pt/',  
+	
+	'pt_bert-base-uncased_amazon_yelp': '../pt_model/pt_bert-base-uncased_amazon_yelp/',
 }
