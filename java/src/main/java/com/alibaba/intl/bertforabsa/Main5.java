@@ -24,7 +24,7 @@ public class Main5 {
 
 
         List<String> aspects = getAspects();
-        List<String> dataLines = IntStream.range(1, allLines.size())
+        List<String> dataLines = IntStream.range(0, allLines.size())
                 .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, allLines.get(i).trim()))
                 .filter(e -> e.getValue().length() >= 1)
                 .filter(e -> isPureAscii(e.getValue()))
