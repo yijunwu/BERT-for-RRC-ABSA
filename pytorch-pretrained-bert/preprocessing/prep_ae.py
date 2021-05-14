@@ -11,6 +11,8 @@ import random
 random.seed(1337)
 np.random.seed(1337)
 
+polar_idx={'positive': 0, 'negative': 1, 'neutral': 2}
+
 def parse_SemEval14(fn):
     root=ET.parse(fn).getroot()
     corpus={}
@@ -37,7 +39,7 @@ def parse_SemEval14(fn):
             
         text="".join(text)
         tokens=nltk.word_tokenize(text)
-        lb=[0]*len(tokens)
+        lb=["O"]*len(tokens)
         for opin in opins:
             opin_cnt[opin[3]]+=1
             token_idx, pt, tag_on=0, 0, False
@@ -64,9 +66,9 @@ def parse_SemEval14(fn):
                     pt+=2
                 else:
                     pt+=1
-        corpus[int(sent.attrib['id'])]={"tokens": tokens, "labels": lb}
-    print opin_cnt
-    print len(corpus)
+        corpus[int(sent.attrib['id'])]={"id": int(sent.attrib['id']), "sentence": tokens, "label": lb}
+    print(opin_cnt)
+    print(len(corpus))
     return corpus
 
 
@@ -74,7 +76,7 @@ def parse_SemEval14(fn):
 def parse_SemEval16(fn):
     sent_tokens, sent_labels = [], []
     root=ET.parse(fn).getroot()
-    for sent in review.iter("sentence"):
+    for sent in root.iter("sentence"):
         text=[]
         opins=set()
         for opin in sent.iter('Opinion'):
@@ -123,3 +125,15 @@ def parse_SemEval16(fn):
         sent_tokens.append(tokens)
         sent_labels.append(lb)
     return sent_tokens, sent_labels
+
+
+#train_corpus=parse_SemEval14('../SemEval/SemEval14/Laptop_Train_v2.xml')
+#valid_split=150
+# with open("../ae/assurance/train.json", "w") as fw:
+#     json.dump({rec["id"]: rec for rec in train_corpus[:-valid_split] }, fw, sort_keys=True, indent=4)
+# with open("../ae/assurance/dev.json", "w") as fw:
+#     json.dump({rec["id"]: rec for rec in train_corpus[-valid_split:] }, fw, sort_keys=True, indent=4)
+test_corpus=parse_SemEval14('../ae/assurance/ae_test.xml')
+with open("../ae/assurance/test.json", "w") as fw:
+    json.dump({id: rec for id, rec in test_corpus.items()}, fw, sort_keys=True, indent=4)
+
