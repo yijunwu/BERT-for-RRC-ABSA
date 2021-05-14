@@ -24,12 +24,11 @@ public class Main5 {
 
 
         List<String> aspects = getAspects();
-        int skipLines = 1;
-        List<String> dataLines = IntStream.range(skipLines, allLines.size())
+        List<String> dataLines = IntStream.range(0, allLines.size())
                 .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, allLines.get(i).trim()))
                 .filter(e -> e.getValue().length() >= 1)
                 .filter(e -> isPureAscii(e.getValue()))
-                .flatMap(e -> buildLines2(e.getKey() - skipLines, e.getValue()).stream())
+                .flatMap(e -> buildLines2(e.getKey(), e.getValue()).stream())
                 .collect(Collectors.toList());
 
         Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\ae_test.xml");
