@@ -1,5 +1,8 @@
 package com.alibaba.intl.bertforabsa;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.text.StringEscapeUtils;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -8,20 +11,33 @@ import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.apache.commons.text.StringEscapeUtils;
 
-public class Main5 {
+public class ResultExporter {
     public static void main(String[] args) throws IOException {
 
-        createTestXmlFile();
+        createTsvFile();
     }
 
-    private static void createTestXmlFile() throws IOException {
-        Path feedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\reason_recommend_ta.txt");
-        List<String> allLines = Files.readAllLines(feedbackFilePath);
+    class Prediction {
+        List<List<List<Double>>> logits;
+        List<List<String>> raw_X;
+        List<List<Integer>> idx_map;
+    }
 
+    private static void createTsvFile() throws IOException {
+        Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_ae\\assurance\\1\\predictions.json");
+        Prediction prediction = new ObjectMapper().convertValue(String.join("", Files.readAllLines(predictionFilePath)), Prediction.class);
+
+        IntStream.range(0, prediction.logits.size()).mapToObj(i -> getLabel(prediction.logits.get(i)));
+
+        List<List<TargetLabel>> labels = prediction.logits.stream().map(l -> getLabel(l)).collect(Collectors.toList());
+
+        List<List<String>> terms = IntStream.range(0, prediction.logits.size())
+                .mapToObj(i -> extractTerms(labels.get(i), prediction.raw_X.get(i)))
+                .collect(Collectors.toList());
 
         List<String> aspects = getAspects();
         List<String> dataLines = IntStream.range(0, allLines.size())
@@ -42,6 +58,38 @@ public class Main5 {
         List<String> strings = Files.readAllLines(file);
 
         assert strings.size() > 1000;
+    }
+
+    private static List<String> extractTerms(List<TargetLabel> targetLabels, List<String> strings) {
+        
+        for (int i = 0; i < targetLabels.size(); i ++) {
+            TargetLabel label = targetLabels.get(i);
+            if (label == TargetLabel.B)
+        }
+    }
+
+    enum TargetLabel {
+        B, I, O
+    }
+
+    private static List<TargetLabel> getLabel(List<List<Double>> lists) {
+        return lists.stream()
+                .map(l -> argmax(l))
+                .map(i -> (i == 1) ? TargetLabel.B : (i == 2 ? TargetLabel.I : TargetLabel.O))
+                .collect(Collectors.toList());
+    }
+
+    private static Integer argmax(List<Double> l) {
+        double max = -1000;
+        int index = -1;
+
+        for(int i = 0; i < l.size(); i ++){
+            if(max < l.get(i)){
+                max = l.get(i);
+                index = i;
+            }
+        }
+        return index;
     }
 
     private static List<String> buildLines2(Integer id, String sentence) {
