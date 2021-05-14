@@ -17,6 +17,7 @@
 import os
 import logging
 import argparse
+import pdb
 import random
 import json
 
@@ -212,7 +213,10 @@ def test(args):  # Load a trained model that you have fine-tuned (we assume eval
         #sort by original order for evaluation
         recs={}
         for qx, ex in enumerate(eval_examples):
-            recs[int(ex.guid.split("-")[1]) ]={"sentence": ex.text_a, "idx_map": ex.idx_map, "logit": full_logits[qx][1:]} #skip the [CLS] tag.
+            recs[ qx ]={"sentence": ex.text_a, "idx_map": ex.idx_map, "logit": full_logits[qx][1:]} #skip the [CLS] tag.
+
+        #if qx == 34:
+        import pdb; pdb.set_trace();
         full_logits=[recs[qx]["logit"] for qx in range(len(full_logits))]
         raw_X=[recs[qx]["sentence"] for qx in range(len(eval_examples) ) ]
         idx_map=[recs[qx]["idx_map"] for qx in range(len(eval_examples)) ]
