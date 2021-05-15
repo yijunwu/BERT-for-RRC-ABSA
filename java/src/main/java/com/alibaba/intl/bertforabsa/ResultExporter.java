@@ -1,8 +1,10 @@
 package com.alibaba.intl.bertforabsa;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -15,23 +17,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+class Prediction {
+    public Prediction() {}
+    public List<List<List<Double>>> logits;
+    public List<List<String>> raw_X;
+    public List<List<Integer>> idx_map;
+}
+
 public class ResultExporter {
     public static void main(String[] args) throws IOException {
 
         createTsvFile();
     }
 
-    class Prediction {
-        List<List<List<Double>>> logits;
-        List<List<String>> raw_X;
-        List<List<Integer>> idx_map;
-    }
-
     private static void createTsvFile() throws IOException {
         Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_ae\\assurance\\1\\predictions.json");
-        Prediction prediction = new ObjectMapper().convertValue(String.join("", Files.readAllLines(predictionFilePath)), Prediction.class);
-
-        IntStream.range(0, prediction.logits.size()).mapToObj(i -> getLabel(prediction.logits.get(i)));
+        String jsonStr = String.join("", Files.readAllLines(predictionFilePath));
+        Prediction prediction = new ObjectMapper().readValue(jsonStr, Prediction.class);
 
         List<List<TargetLabel>> labels = prediction.logits.stream().map(l -> getLabel(l)).collect(Collectors.toList());
 
@@ -39,33 +41,55 @@ public class ResultExporter {
                 .mapToObj(i -> extractTerms(labels.get(i), prediction.raw_X.get(i)))
                 .collect(Collectors.toList());
 
-        List<String> aspects = getAspects();
-        List<String> dataLines = IntStream.range(0, allLines.size())
-                .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, allLines.get(i).trim()))
-                .filter(e -> e.getValue().length() >= 1)
-                .filter(e -> isPureAscii(e.getValue()))
-                .flatMap(e -> buildLines2(e.getKey(), e.getValue()).stream())
-                .collect(Collectors.toList());
+//        List<String> aspects = getAspects();
+//        List<String> dataLines = IntStream.range(0, allLines.size())
+//                .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, allLines.get(i).trim()))
+//                .filter(e -> e.getValue().length() >= 1)
+//                .filter(e -> isPureAscii(e.getValue()))
+//                .flatMap(e -> buildLines2(e.getKey(), e.getValue()).stream())
+//                .collect(Collectors.toList());
 
-        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\ae_test.xml");
+        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\prediction_terms.txt");
         Path file = Files.createFile(resultFilePath);
-        List<String> resultList = new ArrayList<>();
-        resultList.add("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-        resultList.add("<sentences>");
-        resultList.addAll(dataLines);
-        resultList.add("</sentences>");
-        Files.write(file, resultList);
-        List<String> strings = Files.readAllLines(file);
+        List<String> resultList = IntStream.range(0, prediction.logits.size())
+                .mapToObj(i -> "" + i + System.lineSeparator()
+                        + String.join(" ", prediction.raw_X.get(i)) + System.lineSeparator()
+                        + String.join(System.lineSeparator(), terms.get(i))
+                        + System.lineSeparator())
+                .collect(Collectors.toList());
+        //Files.writeString(resultFilePath, Strings.join(resultList, System.lineSeparator()));
 
-        assert strings.size() > 1000;
+        FileWriter writer = new FileWriter(resultFilePath.toFile());
+        for(String str: resultList) {
+            writer.write(str + System.lineSeparator());
+        }
+        writer.close();
     }
 
     private static List<String> extractTerms(List<TargetLabel> targetLabels, List<String> strings) {
-        
-        for (int i = 0; i < targetLabels.size(); i ++) {
+        List<String> resultList = new ArrayList<>();
+        List<String> term = new ArrayList<>();
+        for (int i = 0; i < Math.min(strings.size(), targetLabels.size()); i ++) {
             TargetLabel label = targetLabels.get(i);
-            if (label == TargetLabel.B)
+            if (label == TargetLabel.B) {
+                if (term.size() > 0) {
+                    resultList.add(String.join(" ", term));
+                    term.clear();
+                }
+                term.add(strings.get(i));
+            } else if (label == TargetLabel.I) {
+                term.add(strings.get(i));
+            } else if (label == TargetLabel.O) {
+                if (term.size() > 0) {
+                    resultList.add(String.join(" ", term));
+                    term.clear();
+                }
+            }
         }
+        if (term.size() > 0) {
+            resultList.add(String.join(" ", term));
+        }
+        return resultList;
     }
 
     enum TargetLabel {
