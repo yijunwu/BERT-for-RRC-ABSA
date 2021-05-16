@@ -38,7 +38,7 @@ public class ResultExporter {
         List<List<TargetLabel>> labels = prediction.logits.stream().map(l -> getLabel(l)).collect(Collectors.toList());
 
         List<List<String>> terms = IntStream.range(0, prediction.logits.size())
-                .mapToObj(i -> extractTerms2(labels.get(i), prediction.raw_X.get(i), prediction.idx_map.get(i)))
+                .mapToObj(i -> extractTerms3(labels.get(i), prediction.raw_X.get(i), prediction.idx_map.get(i)))
                 .collect(Collectors.toList());
 
 //        List<String> aspects = getAspects();
@@ -132,6 +132,63 @@ public class ResultExporter {
         }
         return resultList;
     }
+
+    /**
+     * 人为将本该连续的term连接在一起且去除严格重复的term
+     */
+    private static List<String> extractTerms3(List<TargetLabel> targetLabels, List<String> strings, List<Integer> idxMap) {
+        List<List<Integer>> resultList = new ArrayList<>();
+        List<Integer> termIdx = new ArrayList<>();
+        for (int i = 0; i < Math.min(idxMap.size(), targetLabels.size()); i ++) {
+            TargetLabel label = targetLabels.get(i);
+            int idx = idxMap.get(i);
+
+            if (label == TargetLabel.B && termIdx.size() > 0 && termIdx.get(termIdx.size() - 1) == idx - 1) {
+                label = TargetLabel.I;
+            }
+
+            if (label == TargetLabel.B) {
+                if (termIdx.size() > 0) {
+                    resultList.add(new ArrayList<>(termIdx));
+                    termIdx.clear();
+                }
+                termIdx.add(idx);
+            } else if (label == TargetLabel.I) {
+                termIdx.add(idx);
+            } else if (label == TargetLabel.O) {
+                if (termIdx.size() > 0) {
+                    resultList.add(new ArrayList<>(termIdx));
+                    termIdx.clear();
+                }
+            }
+        }
+        if (termIdx.size() > 0) {
+            resultList.add(termIdx);
+        }
+        for (int i = resultList.size() - 1; i >= 0; i --) {
+            for (int j = resultList.size() - 1; j > i; j --) {
+                if (equals(resultList.get(i), resultList.get(j))) {
+                    resultList.remove(j);
+                }
+            }
+        }
+        return resultList.stream()
+                .map(l -> l.stream().map(i -> strings.get(i)).collect(Collectors.joining(" ")))
+                .collect(Collectors.toList());
+    }
+
+    private static boolean equals(List<Integer> integers0, List<Integer> integers1) {
+        if (integers0.size() != integers1.size()) {
+            return false;
+        }
+        for (int i = 0; i < integers0.size(); i++) {
+            if (integers0.get(i).intValue() != integers1.get(i).intValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     enum TargetLabel {
         B, I, O
