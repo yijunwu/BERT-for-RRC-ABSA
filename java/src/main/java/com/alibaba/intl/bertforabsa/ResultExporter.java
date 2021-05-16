@@ -38,7 +38,7 @@ public class ResultExporter {
         List<List<TargetLabel>> labels = prediction.logits.stream().map(l -> getLabel(l)).collect(Collectors.toList());
 
         List<List<String>> terms = IntStream.range(0, prediction.logits.size())
-                .mapToObj(i -> extractTerms(labels.get(i), prediction.raw_X.get(i), prediction.idx_map.get(i)))
+                .mapToObj(i -> extractTerms2(labels.get(i), prediction.raw_X.get(i), prediction.idx_map.get(i)))
                 .collect(Collectors.toList());
 
 //        List<String> aspects = getAspects();
@@ -84,6 +84,46 @@ public class ResultExporter {
                 if (term.size() > 0) {
                     resultList.add(String.join(" ", term));
                     term.clear();
+                }
+            }
+        }
+        if (term.size() > 0) {
+            resultList.add(String.join(" ", term));
+        }
+        return resultList;
+    }
+
+    /**
+     * 人为将本该连续的term连接在一起
+     */
+    private static List<String> extractTerms2(List<TargetLabel> targetLabels, List<String> strings, List<Integer> idxMap) {
+        List<String> resultList = new ArrayList<>();
+        List<String> term = new ArrayList<>();
+        List<Integer> termIdx = new ArrayList<>();
+        for (int i = 0; i < Math.min(idxMap.size(), targetLabels.size()); i ++) {
+            TargetLabel label = targetLabels.get(i);
+            int idx = idxMap.get(i);
+
+            if (label == TargetLabel.B && term.size() > 0 && termIdx.get(termIdx.size() - 1) == idx - 1) {
+                label = TargetLabel.I;
+            }
+
+            if (label == TargetLabel.B) {
+                if (term.size() > 0) {
+                    resultList.add(String.join(" ", term));
+                    term.clear();
+                    termIdx.clear();
+                }
+                term.add(strings.get(idx));
+                termIdx.add(idx);
+            } else if (label == TargetLabel.I) {
+                term.add(strings.get(idx));
+                termIdx.add(idx);
+            } else if (label == TargetLabel.O) {
+                if (term.size() > 0) {
+                    resultList.add(String.join(" ", term));
+                    term.clear();
+                    termIdx.clear();
                 }
             }
         }
