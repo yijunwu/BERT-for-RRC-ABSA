@@ -38,7 +38,7 @@ public class ResultExporter {
         List<List<TargetLabel>> labels = prediction.logits.stream().map(l -> getLabel(l)).collect(Collectors.toList());
 
         List<List<String>> terms = IntStream.range(0, prediction.logits.size())
-                .mapToObj(i -> extractTerms(labels.get(i), prediction.raw_X.get(i)))
+                .mapToObj(i -> extractTerms(labels.get(i), prediction.raw_X.get(i), prediction.idx_map.get(i)))
                 .collect(Collectors.toList());
 
 //        List<String> aspects = getAspects();
@@ -66,19 +66,20 @@ public class ResultExporter {
         writer.close();
     }
 
-    private static List<String> extractTerms(List<TargetLabel> targetLabels, List<String> strings) {
+    private static List<String> extractTerms(List<TargetLabel> targetLabels, List<String> strings, List<Integer> idxMap) {
         List<String> resultList = new ArrayList<>();
         List<String> term = new ArrayList<>();
         for (int i = 0; i < Math.min(strings.size(), targetLabels.size()); i ++) {
             TargetLabel label = targetLabels.get(i);
+            int idx = idxMap.get(i);
             if (label == TargetLabel.B) {
                 if (term.size() > 0) {
                     resultList.add(String.join(" ", term));
                     term.clear();
                 }
-                term.add(strings.get(i));
+                term.add(strings.get(idx));
             } else if (label == TargetLabel.I) {
-                term.add(strings.get(i));
+                term.add(strings.get(idx));
             } else if (label == TargetLabel.O) {
                 if (term.size() > 0) {
                     resultList.add(String.join(" ", term));
