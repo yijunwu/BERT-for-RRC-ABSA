@@ -1,17 +1,28 @@
 package com.alibaba.intl.bertforabsa;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+class Entry {
+    public Entry() {
+    }
+
+    public String id = "";
+    public String sentenceId = "";
+    public String polarity = "positive";
+    public String term = null;
+    public String sentence = "";
+}
 
 public class AspectSentimentClassificationInputConverter {
     public static void main(String[] args) throws IOException {
@@ -19,57 +30,60 @@ public class AspectSentimentClassificationInputConverter {
         createTestXmlFile();
     }
 
-    class Entry {
-        String id = "";
-        String sentenceId = "";
-        String polarity = "positive";
-        String term = "use";
-        String sentence = "";
-    }
-
     private static void createTestXmlFile() throws IOException {
         Path feedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\prediction_terms.txt");
         List<String> allLines = Files.readAllLines(feedbackFilePath);
 
         if (allLines.size() < 2) { return; }
-        String line1 = allLines.get(0), line2 = allLines.get(1), lastLine = null;
-        Long lastBegin = 0L;
+
+        Map<String, Entry> resultMap = new LinkedHashMap<>();
+        String lastLine = null;
+        int lastBegin = 0;
         for (int i = 0; i < allLines.size(); i++) {
            String temp = allLines.get(i);
            if (!temp.isEmpty() && temp.chars().allMatch(Character::isDigit)) {
                if (lastLine != null && (lastLine.isEmpty() || lastLine.trim().isEmpty())) {
                     List<Entry> list = getEntries(allLines, lastBegin, i);
-                    lastBegin = (long)i;
+                    list.forEach(l -> resultMap.put(l.id, l));
+                    lastBegin = i;
                }
            }
             lastLine = temp;
         }
 
-        List<String> aspects = getAspects();
-        int skipLines = 1;
-        List<String> dataLines = IntStream.range(skipLines, allLines.size())
-                .mapToObj(i -> new AbstractMap.SimpleEntry<>(i, allLines.get(i).trim()))
-                .filter(e -> e.getValue().length() >= 1)
-                .filter(e -> isPureAscii(e.getValue()))
-                .flatMap(e -> buildLines2(e.getKey() - skipLines, e.getValue()).stream())
-                .collect(Collectors.toList());
-
-        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\ae_test.xml");
+        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\asc_test.json");
         Path file = Files.createFile(resultFilePath);
-        List<String> resultList = new ArrayList<>();
-        resultList.add("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-        resultList.add("<sentences>");
-        resultList.addAll(dataLines);
-        resultList.add("</sentences>");
-        Files.write(file, resultList);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.writeValue(file.toFile(), resultMap);
+
         List<String> strings = Files.readAllLines(file);
 
-        assert strings.size() > 1000;
+        assert strings.size() >= 1;
     }
 
-    private static List<Entry> getEntries(List<String> allLines, Long lastBegin, int i) {
+    private static List<Entry> getEntries(List<String> allLines, int beginInclusive, int endExclusive) {
         // TODO wuyijun 待实现
-        return null;
+        String idStr = allLines.get(beginInclusive);
+        int id = Integer.parseInt(idStr);
+        String text = allLines.get(beginInclusive + 1);
+
+        List<String> termList = IntStream.range(beginInclusive + 2, endExclusive)
+                .mapToObj(idx -> allLines.get(idx).trim())
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+
+        List<Entry> resultList = new ArrayList<>();
+        for (int i = 0; i <termList.size(); i ++) {
+            Entry entry = new Entry();
+            entry.id = "" + (id * 1000 + i);
+            entry.sentenceId = "" + id;
+            entry.sentence = text;
+            entry.term = termList.get(i);
+            entry.polarity = "neutral";
+            resultList.add(entry);
+        }
+        return resultList;
     }
 
     private static List<String> buildLines2(Integer id, String sentence) {
