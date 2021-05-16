@@ -1,5 +1,7 @@
 package com.alibaba.intl.bertforabsa;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -10,18 +12,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.apache.commons.text.StringEscapeUtils;
 
-public class AspectExtractionInputConverter {
+public class AspectSentimentClassificationInputConverter {
     public static void main(String[] args) throws IOException {
 
         createTestXmlFile();
     }
 
+    class Entry {
+        String id = "";
+        String sentenceId = "";
+        String polarity = "positive";
+        String term = "use";
+        String sentence = "";
+    }
+
     private static void createTestXmlFile() throws IOException {
-        Path feedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\reason_recommend_ta.txt");
+        Path feedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\prediction_terms.txt");
         List<String> allLines = Files.readAllLines(feedbackFilePath);
 
+        if (allLines.size() < 2) { return; }
+        String line1 = allLines.get(0), line2 = allLines.get(1), lastLine = null;
+        Long lastBegin = 0L;
+        for (int i = 0; i < allLines.size(); i++) {
+           String temp = allLines.get(i);
+           if (!temp.isEmpty() && temp.chars().allMatch(Character::isDigit)) {
+               if (lastLine != null && (lastLine.isEmpty() || lastLine.trim().isEmpty())) {
+                    List<Entry> list = getEntries(allLines, lastBegin, i);
+                    lastBegin = (long)i;
+               }
+           }
+            lastLine = temp;
+        }
 
         List<String> aspects = getAspects();
         int skipLines = 1;
@@ -43,6 +65,11 @@ public class AspectExtractionInputConverter {
         List<String> strings = Files.readAllLines(file);
 
         assert strings.size() > 1000;
+    }
+
+    private static List<Entry> getEntries(List<String> allLines, Long lastBegin, int i) {
+        // TODO wuyijun 待实现
+        return null;
     }
 
     private static List<String> buildLines2(Integer id, String sentence) {
