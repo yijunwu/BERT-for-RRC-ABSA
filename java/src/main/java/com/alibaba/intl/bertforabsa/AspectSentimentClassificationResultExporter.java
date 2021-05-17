@@ -1,6 +1,5 @@
 package com.alibaba.intl.bertforabsa;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -10,21 +9,19 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-class Prediction {
-    public Prediction() {}
+class AscPrediction {
+    public AscPrediction() {}
     public List<List<List<Double>>> logits;
     public List<List<String>> raw_X;
     public List<List<Integer>> idx_map;
 }
 
-public class ResultExporter {
+public class AspectSentimentClassificationResultExporter {
     public static void main(String[] args) throws IOException {
 
         createTsvFile();
@@ -33,7 +30,7 @@ public class ResultExporter {
     private static void createTsvFile() throws IOException {
         Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_ae\\assurance\\1\\predictions.json");
         String jsonStr = String.join("", Files.readAllLines(predictionFilePath));
-        Prediction prediction = new ObjectMapper().readValue(jsonStr, Prediction.class);
+        AscPrediction prediction = new ObjectMapper().readValue(jsonStr, AscPrediction.class);
 
         List<List<TargetLabel>> labels = prediction.logits.stream().map(l -> getLabel(l)).collect(Collectors.toList());
 
