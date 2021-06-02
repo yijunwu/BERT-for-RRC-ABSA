@@ -3,7 +3,6 @@ package com.alibaba.intl.bertforabsa;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.StringEscapeUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -12,17 +11,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-class Entry {
-    public Entry() {
-    }
-
-    public String id = "";
-    public String sentenceId = "";
-    public String polarity = "positive";
-    public String term = null;
-    public String sentence = "";
-}
 
 public class AspectSentimentClassificationInputConverter {
     public static void main(String[] args) throws IOException {
@@ -36,14 +24,14 @@ public class AspectSentimentClassificationInputConverter {
 
         if (allLines.size() < 2) { return; }
 
-        Map<String, Entry> resultMap = new LinkedHashMap<>();
+        Map<String, AscInput> resultMap = new LinkedHashMap<>();
         String lastLine = null;
         int lastBegin = 0;
         for (int i = 0; i < allLines.size(); i++) {
            String temp = allLines.get(i);
            if (!temp.isEmpty() && temp.chars().allMatch(Character::isDigit)) {
                if (lastLine != null && (lastLine.isEmpty() || lastLine.trim().isEmpty())) {
-                    List<Entry> list = getEntries(allLines, lastBegin, i);
+                    List<AscInput> list = getEntries(allLines, lastBegin, i);
                     list.forEach(l -> resultMap.put(l.id, l));
                     lastBegin = i;
                }
@@ -62,7 +50,7 @@ public class AspectSentimentClassificationInputConverter {
         assert strings.size() >= 1;
     }
 
-    private static List<Entry> getEntries(List<String> allLines, int beginInclusive, int endExclusive) {
+    private static List<AscInput> getEntries(List<String> allLines, int beginInclusive, int endExclusive) {
         // TODO wuyijun 待实现
         String idStr = allLines.get(beginInclusive);
         int id = Integer.parseInt(idStr);
@@ -73,9 +61,9 @@ public class AspectSentimentClassificationInputConverter {
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
 
-        List<Entry> resultList = new ArrayList<>();
+        List<AscInput> resultList = new ArrayList<>();
         for (int i = 0; i <termList.size(); i ++) {
-            Entry entry = new Entry();
+            AscInput entry = new AscInput();
             entry.id = "" + (id * 1000 + i);
             entry.sentenceId = "" + id;
             entry.sentence = text;

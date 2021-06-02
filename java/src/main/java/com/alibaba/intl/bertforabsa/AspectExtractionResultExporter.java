@@ -14,13 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-class AEPrediction {
-    public AEPrediction() {}
-    public List<List<List<Double>>> logits;
-    public List<List<String>> raw_X;
-    public List<List<Integer>> idx_map;
-}
-
 public class AspectExtractionResultExporter {
     public static void main(String[] args) throws IOException {
 
@@ -28,7 +21,7 @@ public class AspectExtractionResultExporter {
     }
 
     private static void createTsvFile() throws IOException {
-        Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_ae\\assurance\\1\\predictions.json");
+        Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_ae\\assurance\\2\\predictions.json");
         String jsonStr = String.join("", Files.readAllLines(predictionFilePath));
         AEPrediction prediction = new ObjectMapper().readValue(jsonStr, AEPrediction.class);
 
