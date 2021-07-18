@@ -117,7 +117,7 @@ cd preprocessing/
 python prep_ae.py
 ```
 
-### 3. 运行 script/run_absh.sh ae ... ，产生AE(Aspect Extraction)结果
+### 3. 运行 script/run_absa.sh ae ... ，产生AE(Aspect Extraction)结果
 
 命令：
 ```
@@ -126,6 +126,15 @@ cd BERT-for-RRC-ABSA/pytorch-pretrained-bert/
 cd script/
 
 bash run_absa.sh ae pt_bert-base-uncased_amazon_yelp assurance pt_ae 2 0
+```
+
+参数说明：
+```
+task=$1
+bert=$2
+domain=$3
+run_dir=$4
+runs=$5
 ```
 
 ### 4. 运行 AspectExtractionResultExporter ，将结果导出为 prediction_terms.txt
@@ -163,3 +172,9 @@ BERT-for-RRC-ABSA\pytorch-pretrained-bert\run\pt_asc\assurance\2\predictions.jso
 输出：
 
 BERT-for-RRC-ABSA\java\src\main\resources\prediction_sentiment.txt
+
+# 附录
+
+sudo apt-get update
+sudo apt install python3-pip
+pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
