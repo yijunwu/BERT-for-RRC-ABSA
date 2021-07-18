@@ -1,99 +1,165 @@
-# 1. 概述
-WilsonTracker 是一个数据因果关系追踪框架。
+# 大致流程：
+1. 运行java程序，从csv生成xml文件，
+2. 运行 preprocessing/prep_ae.py，将xml文件转换为json 文件
+3. 运行 script/run_absh.sh ae ... ，产生AE(Aspect Extraction)结果
+4. 运行 script/run_absh.sh asc ... ，产生ASC(Aspect Sentiment Classification)结果
+5. 运行 Exporter，将结果导出
 
-# 2. 使用方法
-
-## 2.1 依赖wilson-tracker
-
-```xml
-<groupId>com.alibaba.intl</groupId>
-<artifactId>wilson-tracker</artifactId>
-<version>1.5.2-DFT-SNAPSHOT</version>
-```
-
-## 2.2 注解标注需要追踪的操作入口，数据出入口，以及数据条目
-
-1\.  使用 @TrackedEntrance 标明需要追踪的操作（方法）
-
-```java
-@Override
-@TrackedEntrance(name = "放款", autoIncludeUnits = true, flushOnExit = true)
-public Long createLoad(NyseCreateLoanRequest nyseCreateLoanRequest) {
-    return nysePPLoanDelegate.createLoad(nyseCreateLoanRequest);
-}
-```
-
-2\. 使用 @TrackedSource 标明操作入口之外的数据入口（如从数据库读需要跟踪的数据等）
-
-```java
-@TrackedSource(name = "NyseFundLoanRepository.findByOutEntityIdAndRequestId", dataClass = "com.alibaba.intl.nyse.dal.nyse.entity.NyseFundLoan")
-NyseFundLoan findByOutEntityIdAndRequestId(Long outEntityId, String request);
-```
-
-3\. 使用 @TrackedDestination 标明数据出口（如将被跟踪的数据写入数据库等）
-
-```java
-@TrackedDestination(name = "NyseFundLoanAdaptor.saveNyseFund", autoIncludeUnits = false, dataClass = "com.alibaba.intl.nyse.dal.nyse.entity.NyseFundLoan")
-public NyseFundLoan saveNyseFundLoan(NyseFundLoan fundLoan) {
-    Long amount = fundLoan.getAmount();
-    String amountCur = fundLoan.getAmountCur();
-    Long outEntityId = fundLoan.getOutEntityId();
-    System.out.println(("" + amount + amountCur + outEntityId));
-    return nyseFundLoanRepository.save(fundLoan);
-}
+# 具体过程：
+### 1. 准备xml文件，格式如：
 
 ```
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sentences>
+    <sentence id="0">
+        <text>q10.Could you specify the reason why you would or would not recommend Trade Assurance Service?</text>
+    </sentence>
+    <sentence id="1">
+        <text>everything you could imagine to purchase to sell or buy for yourself in one place</text>
+    </sentence>
+	<!-- ... -->
+</sentences>
+```
+文件放到 \BERT-for-RRC-ABSA\pytorch-pretrained-bert\ae\assurance\ae_test.xml
 
-4\. 使用 @TrackedUnit 操作标明需要跟踪的数据条目
+如果输入文件是csv格式，可以用这个程序转换：AspectExtractionInputConverter
 
-```java
-@TrackedDestination(name = "NyseFundLoanAdaptor.saveNyseFund", autoIncludeUnits = false, dataClass = "com.alibaba.intl.nyse.dal.nyse.entity.NyseFundLoan")
-@TrackedUnit(name = "amount",
-    propagationType = EXPLICIT,
-    group = "amountMoney",
-    expression = "${_.amount}",
-    dataType = NUMBER)
-public NyseFundLoan saveNyseFundLoan(NyseFundLoan fundLoan) {
-    Long amount = fundLoan.getAmount();
-    String amountCur = fundLoan.getAmountCur();
-    Long outEntityId = fundLoan.getOutEntityId();
-    System.out.println(("" + amount + amountCur + outEntityId));
-    return nyseFundLoanRepository.save(fundLoan);
-}
-
+### 2. 运行 prep_ae.py (D:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\preprocessing\prep_ae.py) ，将xml文件转换为json 文件(\BERT-for-RRC-ABSA\pytorch-pretrained-bert\ae\assurance\test.json)，格式如：
+```
+   {
+   "0": {
+   "id": 0,
+   "label": [
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O"
+   ],
+   "sentence": [
+   "q10.Could",
+   "you",
+   "specify",
+   "the",
+   "reason",
+   "why",
+   "you",
+   "would",
+   "or",
+   "would",
+   "not",
+   "recommend",
+   "Trade",
+   "Assurance",
+   "Service",
+   "?"
+   ]
+   },
+   "1": {
+   "id": 1,
+   "label": [
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O",
+   "O"
+   ],
+   "sentence": [
+   "everything",
+   "you",
+   "could",
+   "imagine",
+   "to",
+   "purchase",
+   "to",
+   "sell",
+   "or",
+   "buy",
+   "for",
+   "yourself",
+   "in",
+   "one",
+   "place"
+   ]
+   },
+   ...
+   }
 ```
 
-## 2.3 引入wilson-tracker-maven-plugin
-
-对于需要进行数据追踪的模块，在pom.xml中添加对wilson-tracker-maven-plugin的引用，有父子module结构的，也可以加在父module的pom.xml中。
-示例代码如下
-
-```xml
-<build>
-    <plugins>
-        <plugin>
-            <groupId>com.alibaba.intl</groupId>
-            <artifactId>wilson-tracker-maven-plugin</artifactId>
-            <version>1.5.2-DFT-SNAPSHOT</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>soot</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <enabled>true</enabled>
-                <debug>true</debug>
-                <fork>true</fork>
-                <prependClasspath>true</prependClasspath>
-                <outputFormat>CLASS</outputFormat>
-                <!--modulePatterns>nyse/dal,nyse/biz,nyse/biz.compatible.api,nyse/entry,nyse/export,nyse/api</modulePatterns-->
-                <!-- put your configurations here -->
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
+命令：
 
 ```
+cd /mnt/d/Dev/ProjectsNew/NLP
+cd BERT-for-RRC-ABSA/pytorch-pretrained-bert/
+cd preprocessing/
 
+python prep_ae.py
+```
+
+### 3. 运行 script/run_absh.sh ae ... ，产生AE(Aspect Extraction)结果
+
+命令：
+```
+cd /mnt/d/Dev/ProjectsNew/NLP
+cd BERT-for-RRC-ABSA/pytorch-pretrained-bert/
+cd script/
+
+bash run_absa.sh ae pt_bert-base-uncased_amazon_yelp assurance pt_ae 2 0
+```
+
+### 4. 运行 AspectExtractionResultExporter ，将结果导出为 prediction_terms.txt
+
+### 5. 运行 AspectSentimentClassificationInputConverter，将 prediction_terms.txt 转换为 asc_test.json
+
+### 6. 复制文件，准备数据文件集
+
+   BERT-for-RRC-ABSA\pytorch-pretrained-bert\asc\assurance\test.json
+
+   train.json
+
+   dev.json
+
+
+### 7. 运行 script/run_absh.sh asc ... ，产生ASC(Aspect Sentiment Classification)结果
+
+BERT-for-RRC-ABSA\pytorch-pretrained-bert\run\pt_asc\assurance\2\predictions.json
+
+命令：
+```
+cd /mnt/d/Dev/ProjectsNew/NLP
+cd BERT-for-RRC-ABSA/pytorch-pretrained-bert/
+cd script/
+
+bash run_absa.sh asc pt_bert-base-uncased_amazon_yelp assurance pt_asc 2 0
+```
+
+### 8. 运行 AspectSentimentClassificationResultExporter，将结果导出
+
+输入：
+
+BERT-for-RRC-ABSA\pytorch-pretrained-bert\run\pt_asc\assurance\2\predictions.json
+
+输出：
+
+BERT-for-RRC-ABSA\java\src\main\resources\prediction_sentiment.txt
