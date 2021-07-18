@@ -178,3 +178,115 @@ BERT-for-RRC-ABSA\java\src\main\resources\prediction_sentiment.txt
 sudo apt-get update
 sudo apt install python3-pip
 pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+
+
+
+待整理：
+1  pwd
+2  ls
+3  cd /home
+4  ls
+5  cd wuyijun
+6  ls
+7  mkdir inst1dir
+8  ls
+9  exit
+10  ls /home/wuyijun/
+11  exit
+12  ls /home/wuyijun/
+13  exit
+14  pwd
+15  ls
+16  yum
+17  apt
+18  python --version
+19  python3
+20  pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+21  sudo apt install python3-pip
+22  pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+23  cd /mnt/d/Dev
+24  cd Projectsnew
+25  cd ..
+26  cd ProjectsNew
+27  ls
+28  cd NLP
+29  ls
+30  cd BERT-for-RRC-ABSA/
+31  ls
+32  cd transformers/
+33  ls
+34  bash script/run_ft.sh
+35  exit
+36  cd /mnt/d/Dev/ProjectsNew/NLP/BERT-for-RRC-ABSA/transformers
+37  ./script/run_ft.sh
+38  vi ./script/run_ft.sh
+39  pwd
+40  ls
+41  cd /home
+42  ls
+43  cd wuyijun
+44  ls
+45  pwd
+46  ll
+47  mkdir Dev
+48  cd Dev
+49  mkdir ProjectsNew
+50  cd ProjectsNew/
+51  mkdir NLP
+52  ls
+53  cd NLP
+54  mkdir BERT-for-RRC-ABSA
+55  cd BERT-for-RRC-ABSA/
+56  git clone https://github.com/howardhsu/BERT-for-RRC-ABSA.git
+57  ls
+58  cd ..
+59  ls
+60  rm -rf BERT-for-RRC-ABSA/
+61  git clone https://github.com/howardhsu/BERT-for-RRC-ABSA.git
+62  exit
+63  cd /home/wuyijun/
+64  ls
+65  exit
+66  pwd
+67  cd /mnt/d/Dev/ProjectsNew/
+68  ls
+69  cd NLP
+70  cd BERT-for-RRC-ABSA/
+71  ls
+72  cd pytorch-pretrained-bert/
+73  ls
+74  cd script/
+75  bash run_absa.sh ae pt_bert-base-uncased_amazon_yelp laptop pt_ae 2 0
+76  bash run_absa.sh ae pt_bert-base-uncased_amazon_yelp laptop pt_ae 15 0
+77  bash run_absa.sh asc pt_bert-base-uncased_amazon_yelp laptop pt_asc 10 0
+78  cd ..
+79  ls
+80  cd preprocessing/
+81  ls
+82  python prep_ae.py
+83  pip3 install nltk
+84  python prep_ae.py
+85  python
+86  ls /usr/share/
+87  mkdir -p /usr/share/nltk_data/tokenizers
+88  cp /mnt/c/Users/wuyijun/Downloads/punkt.zip /usr/share/nltk_data/tokenizers/
+89  cd /usr/share/nltk_data/tokenizers/
+90  unzip punkt.zip
+91  ll
+92  rm -f punkt.zip
+93  cd -
+94  python prep_ae.py
+95  cd ..
+96  cd script
+97  bash run_absa.sh ae pt_bert-base-uncased_amazon_yelp assurance pt_ae 2 0
+98  cd ../preprocessing/
+99  python prep_ae.py
+100  cd ../script/
+101  bash run_absa.sh ae pt_bert-base-uncased_amazon_yelp assurance pt_ae 2 0
+102  cd ../preprocessing/
+103  python prep_ae.py
+104  cd script
+105  cd ../script/
+106  bash run_absa.sh ae pt_bert-base-uncased_amazon_yelp assurance pt_ae 2 0
+107  bash run_absa.sh asc pt_bert-base-uncased_amazon_yelp assurance pt_asc 2 0
+108  history
