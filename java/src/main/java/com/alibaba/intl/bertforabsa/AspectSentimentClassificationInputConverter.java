@@ -19,8 +19,9 @@ public class AspectSentimentClassificationInputConverter {
     }
 
     private static void createTestXmlFile() throws IOException {
-        Path feedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\prediction_terms.txt");
-        List<String> allLines = Files.readAllLines(feedbackFilePath);
+        Path feedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\assurance\\prediction_terms.txt");
+        Path shoppingCartSuggestionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\shopping_cart\\prediction_terms.txt");
+        List<String> allLines = Files.readAllLines(shoppingCartSuggestionFilePath);
 
         if (allLines.size() < 2) { return; }
 
@@ -39,8 +40,9 @@ public class AspectSentimentClassificationInputConverter {
             lastLine = temp;
         }
 
-        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\asc_test.json");
-        Path file = Files.createFile(resultFilePath);
+        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\assurance\\asc_test.json");
+        Path shoppingCartResultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\shopping_cart\\asc_test.json");
+        Path file = Files.createFile(shoppingCartResultFilePath);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.writeValue(file.toFile(), resultMap);

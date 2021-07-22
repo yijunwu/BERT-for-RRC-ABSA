@@ -21,7 +21,7 @@ public class AspectExtractionResultExporter {
     }
 
     private static void createTsvFile() throws IOException {
-        Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_ae\\assurance\\2\\predictions.json");
+        Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_ae\\shopping_cart\\1\\predictions.json");
         String jsonStr = String.join("", Files.readAllLines(predictionFilePath));
         AEPrediction prediction = new ObjectMapper().readValue(jsonStr, AEPrediction.class);
 
@@ -39,7 +39,8 @@ public class AspectExtractionResultExporter {
 //                .flatMap(e -> buildLines2(e.getKey(), e.getValue()).stream())
 //                .collect(Collectors.toList());
 
-        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\prediction_terms.txt");
+        Path assuranceResultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\assurance\\prediction_terms.txt");
+        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\shopping_cart\\prediction_terms.txt");
         Path file = Files.createFile(resultFilePath);
         List<String> resultList = IntStream.range(0, prediction.logits.size())
                 .mapToObj(i -> "" + i + System.lineSeparator()

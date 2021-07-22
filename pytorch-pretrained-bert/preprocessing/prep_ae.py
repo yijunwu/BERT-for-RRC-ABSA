@@ -133,7 +133,7 @@ def parse_SemEval16(fn):
 #     json.dump({rec["id"]: rec for rec in train_corpus[:-valid_split] }, fw, sort_keys=True, indent=4)
 # with open("../ae/assurance/dev.json", "w") as fw:
 #     json.dump({rec["id"]: rec for rec in train_corpus[-valid_split:] }, fw, sort_keys=True, indent=4)
-test_corpus=parse_SemEval14('../ae/assurance/ae_test.xml')
-with open("../ae/assurance/test.json", "w") as fw:
+test_corpus=parse_SemEval14('../ae/shopping_cart/ae_test.xml')
+with open("../ae/shopping_cart/test.json", "w") as fw:
     json.dump({id: rec for id, rec in test_corpus.items()}, fw, sort_keys=True, indent=4)
 

@@ -19,8 +19,9 @@ public class AspectExtractionInputConverter {
     }
 
     private static void createTestXmlFile() throws IOException {
-        Path feedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\reason_recommend_ta.txt");
-        List<String> allLines = Files.readAllLines(feedbackFilePath);
+        Path buyerFeedbackFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\assurance\\reason_recommend_ta.txt");
+        Path suggestionOnShoppingCartFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\shopping_cart\\suggestion_on_shopping_cart.txt");
+        List<String> allLines = Files.readAllLines(suggestionOnShoppingCartFilePath);
 
 
         List<String> aspects = getAspects();
@@ -31,9 +32,9 @@ public class AspectExtractionInputConverter {
                 .filter(e -> isPureAscii(e.getValue()))
                 .flatMap(e -> buildLines2(e.getKey() - skipLines, e.getValue()).stream())
                 .collect(Collectors.toList());
-
-        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\ae_test.xml");
-        Path file = Files.createFile(resultFilePath);
+        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\assurance\\ae_test.xml");
+        Path resultFilePath2 = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\shopping_cart\\ae_test.xml");
+        Path file = Files.createFile(resultFilePath2);
         List<String> resultList = new ArrayList<>();
         resultList.add("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
         resultList.add("<sentences>");
