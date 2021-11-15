@@ -22,10 +22,11 @@ public class AspectSentimentClassificationResultExporter {
     }
 
     private static void createTsvFile() throws IOException {
+        String dataset = "order_review";
         Path assuranceInputFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\asc\\assurance\\test.json");
         Path assurancePredictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_asc\\assurance\\1\\predictions.json");
-        Path inputFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\asc\\shopping_cart\\test.json");
-        Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_asc\\shopping_cart\\1\\predictions.json");
+        Path inputFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\asc\\" + dataset + "\\test.json");
+        Path predictionFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\pytorch-pretrained-bert\\run\\pt_asc\\" + dataset + "\\1\\predictions.json");
         String ascInputJsonStr = String.join("", Files.readAllLines(inputFilePath));
         String ascPredictionJsonStr = String.join("", Files.readAllLines(predictionFilePath));
 
@@ -46,7 +47,7 @@ public class AspectSentimentClassificationResultExporter {
         }
 
         Path assuranceResultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\assurance\\prediction_sentiment.txt");
-        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\shopping_cart\\prediction_sentiment.txt");
+        Path resultFilePath = Paths.get("D:\\Dev\\ProjectsNew\\NLP\\BERT-for-RRC-ABSA\\java\\src\\main\\resources\\" + dataset + "\\prediction_sentiment.txt");
         Path file = Files.createFile(resultFilePath);
 
         FileWriter writer = new FileWriter(resultFilePath.toFile());
