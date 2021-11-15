@@ -24,7 +24,7 @@
 
 如果输入文件是csv格式，可以用这个程序转换：AspectExtractionInputConverter
 
-### 2. 运行 prep_ae.py (D:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\preprocessing\prep_ae.py) ，将xml文件转换为json 文件(\BERT-for-RRC-ABSA\pytorch-pretrained-bert\ae\assurance\test.json)，格式如：
+### 2. 修改并运行 prep_ae.py (D:\Dev\ProjectsNew\NLP\BERT-for-RRC-ABSA\pytorch-pretrained-bert\preprocessing\prep_ae.py) ，将xml文件转换为json 文件(\BERT-for-RRC-ABSA\pytorch-pretrained-bert\ae\assurance\test.json)，格式如：
 ```
    {
    "0": {
